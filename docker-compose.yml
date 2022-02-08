@@ -1,0 +1,56 @@
+version: "3.3"
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: Developer
+    volumes:
+      - sql-data:/var/opt/mssql
+    ports:
+      - "14330:1433"
+    networks:
+      - public
+      - local
+    hostname: mssql
+    restart: "no"
+  sqlpad:
+    image: sqlpad/sqlpad:6.9
+    environment:
+      SQLPAD_AUTH_DISABLED: true
+      SQLPAD_AUTH_DISABLED_DEFAULT_ROLE: "admin"
+      SQLPAD_DEFAULT_CONNECTION_ID: "mssql-master"
+      # DB Connection
+      SQLPAD_CONNECTIONS__mssql__name: "SQL Server [${MSSQL_DATABASE}]"
+      SQLPAD_CONNECTIONS__mssql__driver: sqlserver
+      SQLPAD_CONNECTIONS__mssql__host: mssql
+      SQLPAD_CONNECTIONS__mssql__database: ${MSSQL_DATABASE}
+      SQLPAD_CONNECTIONS__mssql__username: sa
+      SQLPAD_CONNECTIONS__mssql__password: ${MSSQL_SA_PASSWORD}
+      # Master Connection
+      SQLPAD_CONNECTIONS__mssql-master__name: SQL Server [master]
+      SQLPAD_CONNECTIONS__mssql-master__driver: sqlserver
+      SQLPAD_CONNECTIONS__mssql-master__host: mssql
+      SQLPAD_CONNECTIONS__mssql-master__database: master
+      SQLPAD_CONNECTIONS__mssql-master__username: sa
+      SQLPAD_CONNECTIONS__mssql-master__password: ${MSSQL_SA_PASSWORD}
+    volumes:
+      - sqlpad-data:/var/lib/sqlpad
+    ports:
+      - "3000:3000"
+    networks:
+      - public
+      - local
+    hostname: sqlpad
+    restart: "no"
+
+volumes:
+  sql-data: null
+  sqlpad-data: null
+
+networks:
+  public:
+    internal: false
+  local:
+    internal: true
