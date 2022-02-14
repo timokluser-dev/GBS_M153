@@ -1,0 +1,19 @@
+{
+  "name": "gbs_m153-docs",
+  "version": "0.0.1",
+  "description": "Developing data models",
+  "main": "index.js",
+  "authors": {
+    "name": "timokluser-dev",
+    "email": "gh@timokluser.ch"
+  },
+  "repository": "https://github.com/timokluser-dev/GBS_M153",
+  "scripts": {
+    "dev": "vuepress dev",
+    "build": "vuepress build"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  }
+}
